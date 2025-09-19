@@ -1,0 +1,114 @@
+2025-09-07 10:07:23,720 - __main__ - INFO - 🚀 Initializing AgentZero Live System...
+2025-09-07 10:07:23,720 - ResearchAgent:1dc8bbbf - INFO - Initializing ResearchAgent-1
+2025-09-07 10:07:23,720 - HiveCoordinator:agentzer - INFO - Agent registered: ResearchAgent-1 (1dc8bbbf)
+2025-09-07 10:07:23,720 - ResearchAgent:a8c3dc29 - INFO - Initializing ResearchAgent-2
+2025-09-07 10:07:23,720 - HiveCoordinator:agentzer - INFO - Agent registered: ResearchAgent-2 (a8c3dc29)
+2025-09-07 10:07:23,720 - CodeAgent:90044305 - INFO - Initializing CodeAgent-1
+2025-09-07 10:07:23,720 - HiveCoordinator:agentzer - INFO - Agent registered: CodeAgent-1 (90044305)
+2025-09-07 10:07:23,720 - CodeAgent:2cb1cd5d - INFO - Initializing CodeAgent-2
+2025-09-07 10:07:23,720 - HiveCoordinator:agentzer - INFO - Agent registered: CodeAgent-2 (2cb1cd5d)
+2025-09-07 10:07:23,720 - PlanningAgent:8901ea88 - INFO - Initializing PlanningAgent-1
+2025-09-07 10:07:23,720 - HiveCoordinator:agentzer - INFO - Agent registered: PlanningAgent-1 (8901ea88)
+2025-09-07 10:07:23,720 - ExecutionAgent:270f8fd7 - INFO - Initializing ExecutionAgent-1
+2025-09-07 10:07:23,720 - HiveCoordinator:agentzer - INFO - Agent registered: ExecutionAgent-1 (270f8fd7)
+2025-09-07 10:07:23,720 - __main__ - INFO - ✅ AgentZero Live System initialized with 6 agents
+2025-09-07 10:07:23,720 - __main__ - INFO - 
+======================================================================
+2025-09-07 10:07:23,720 - __main__ - INFO - 🎬 Running AgentZero Live Demonstration
+2025-09-07 10:07:23,720 - __main__ - INFO - ======================================================================
+2025-09-07 10:07:23,721 - __main__ - INFO - 
+📌 Demo Request 1: Create a REST API for user authentication with JWT tokens
+2025-09-07 10:07:23,721 - __main__ - INFO - --------------------------------------------------
+2025-09-07 10:07:23,721 - __main__ - INFO - 📝 Processing request: Create a REST API for user authentication with JWT tokens
+2025-09-07 10:07:23,721 - HiveCoordinator:agentzer - INFO - Task submitted: Generate API Service (ID: 80864cff)
+2025-09-07 10:07:23,721 - HiveCoordinator:agentzer - INFO - Task Generate API Service assigned to CodeAgent-1
+2025-09-07 10:07:23,721 - __main__ - INFO -   ➡️ Task submitted: Generate API Service
+2025-09-07 10:07:23,721 - CodeAgent:90044305 - INFO - Executing code task: Generate API Service
+2025-09-07 10:07:23,721 - CodeAgent:90044305 - INFO - Generating python api
+2025-09-07 10:07:23,721 - __main__ - INFO -   ✅ Task completed: Generate API Service by CodeAgent-1
+2025-09-07 10:07:23,721 - __main__ - INFO - 📊 Results:
+2025-09-07 10:07:23,721 - __main__ - INFO -   ✅ Generate API Service - completed
+2025-09-07 10:07:23,721 - __main__ - INFO -     💾 Result saved to: live_results/generate_api_service_20250907_100723.json
+2025-09-07 10:07:24,722 - __main__ - INFO - 
+📌 Demo Request 2: Generate a strategic plan for Q1 2025 product development
+2025-09-07 10:07:24,723 - __main__ - INFO - --------------------------------------------------
+2025-09-07 10:07:24,723 - __main__ - INFO - 📝 Processing request: Generate a strategic plan for Q1 2025 product development
+2025-09-07 10:07:24,723 - HiveCoordinator:agentzer - INFO - Task submitted: Create Strategic Plan (ID: 4df165de)
+2025-09-07 10:07:24,723 - HiveCoordinator:agentzer - INFO - Task Create Strategic Plan assigned to PlanningAgent-1
+2025-09-07 10:07:24,723 - __main__ - INFO -   ➡️ Task submitted: Create Strategic Plan
+2025-09-07 10:07:24,723 - PlanningAgent:8901ea88 - INFO - Executing planning task: Create Strategic Plan
+2025-09-07 10:07:24,723 - PlanningAgent:8901ea88 - INFO - Creating strategic plan for: Create Strategic Plan
+2025-09-07 10:07:24,723 - __main__ - INFO -   ✅ Task completed: Create Strategic Plan by PlanningAgent-1
+2025-09-07 10:07:24,724 - __main__ - INFO - 📊 Results:
+2025-09-07 10:07:24,724 - __main__ - INFO -   ✅ Create Strategic Plan - completed
+2025-09-07 10:07:24,724 - __main__ - INFO -     💾 Result saved to: live_results/create_strategic_plan_20250907_100724.json
+2025-09-07 10:07:25,725 - __main__ - INFO - 
+📌 Demo Request 3: Deploy the authentication service to production
+2025-09-07 10:07:25,725 - __main__ - INFO - --------------------------------------------------
+2025-09-07 10:07:25,725 - __main__ - INFO - 📝 Processing request: Deploy the authentication service to production
+2025-09-07 10:07:25,726 - HiveCoordinator:agentzer - INFO - Task submitted: Deploy Service (ID: af9e1e5f)
+2025-09-07 10:07:25,726 - HiveCoordinator:agentzer - INFO - Task Deploy Service assigned to ExecutionAgent-1
+2025-09-07 10:07:25,726 - __main__ - INFO -   ➡️ Task submitted: Deploy Service
+2025-09-07 10:07:25,726 - ExecutionAgent:270f8fd7 - INFO - Executing operational task: Deploy Service
+2025-09-07 10:07:25,726 - ExecutionAgent:270f8fd7 - INFO - Deploying service: deploy-service
+2025-09-07 10:07:25,726 - __main__ - INFO -   ✅ Task completed: Deploy Service by ExecutionAgent-1
+2025-09-07 10:07:25,726 - __main__ - INFO - 📊 Results:
+2025-09-07 10:07:25,726 - __main__ - INFO -   ✅ Deploy Service - completed
+2025-09-07 10:07:25,727 - __main__ - INFO -     💾 Result saved to: live_results/deploy_service_20250907_100725.json
+2025-09-07 10:07:26,728 - __main__ - INFO - 
+📌 Demo Request 4: Monitor system health and generate performance report
+2025-09-07 10:07:26,728 - __main__ - INFO - --------------------------------------------------
+2025-09-07 10:07:26,728 - __main__ - INFO - 📝 Processing request: Monitor system health and generate performance report
+2025-09-07 10:07:26,728 - HiveCoordinator:agentzer - INFO - Task submitted: Monitor System (ID: f9541100)
+2025-09-07 10:07:26,728 - HiveCoordinator:agentzer - INFO - Task Monitor System assigned to ExecutionAgent-1
+2025-09-07 10:07:26,728 - __main__ - INFO -   ➡️ Task submitted: Monitor System
+2025-09-07 10:07:26,728 - ExecutionAgent:270f8fd7 - INFO - Executing operational task: Monitor System
+2025-09-07 10:07:26,728 - ExecutionAgent:270f8fd7 - INFO - Monitoring system and services
+2025-09-07 10:07:26,729 - __main__ - INFO -   ✅ Task completed: Monitor System by ExecutionAgent-1
+2025-09-07 10:07:26,729 - __main__ - INFO - 📊 Results:
+2025-09-07 10:07:26,729 - __main__ - INFO -   ✅ Monitor System - completed
+2025-09-07 10:07:26,729 - __main__ - INFO -     💾 Result saved to: live_results/monitor_system_20250907_100726.json
+2025-09-07 10:07:27,730 - __main__ - INFO - 
+📌 Demo Request 5: Optimize database queries for better performance
+2025-09-07 10:07:27,730 - __main__ - INFO - --------------------------------------------------
+2025-09-07 10:07:27,730 - __main__ - INFO - 📝 Processing request: Optimize database queries for better performance
+2025-09-07 10:07:27,730 - HiveCoordinator:agentzer - INFO - Task submitted: Optimize Code (ID: 248b6c39)
+2025-09-07 10:07:27,730 - HiveCoordinator:agentzer - INFO - Task Optimize Code assigned to CodeAgent-1
+2025-09-07 10:07:27,730 - __main__ - INFO -   ➡️ Task submitted: Optimize Code
+2025-09-07 10:07:27,730 - CodeAgent:90044305 - INFO - Executing code task: Optimize Code
+2025-09-07 10:07:27,730 - CodeAgent:90044305 - INFO - Generating python function
+2025-09-07 10:07:27,730 - __main__ - INFO -   ✅ Task completed: Optimize Code by CodeAgent-1
+2025-09-07 10:07:27,730 - __main__ - INFO - 📊 Results:
+2025-09-07 10:07:27,730 - __main__ - INFO -   ✅ Optimize Code - completed
+2025-09-07 10:07:27,731 - __main__ - INFO -     💾 Result saved to: live_results/optimize_code_20250907_100727.json
+2025-09-07 10:07:28,732 - __main__ - INFO - 
+======================================================================
+2025-09-07 10:07:28,733 - __main__ - INFO - ✨ AgentZero Live Demonstration Complete!
+2025-09-07 10:07:28,733 - __main__ - INFO - ======================================================================
+2025-09-07 10:07:28,733 - __main__ - INFO - 
+📈 System Summary:
+2025-09-07 10:07:28,733 - __main__ - INFO -   • Total Agents: 6
+2025-09-07 10:07:28,733 - __main__ - INFO -   • Tasks Completed: 0
+2025-09-07 10:07:28,733 - __main__ - INFO -   • Active Tasks: 5
+2025-09-07 10:07:28,733 - __main__ - INFO -   • Hive Efficiency: 0.0%
+2025-09-07 10:07:28,733 - __main__ - INFO - 
+🤖 Agent Performance:
+2025-09-07 10:07:28,733 - __main__ - INFO -   • ResearchAgent-1: 0 tasks completed
+2025-09-07 10:07:28,733 - __main__ - INFO -   • ResearchAgent-2: 0 tasks completed
+2025-09-07 10:07:28,733 - __main__ - INFO -   • CodeAgent-1: 0 tasks completed
+2025-09-07 10:07:28,733 - __main__ - INFO -   • CodeAgent-2: 0 tasks completed
+2025-09-07 10:07:28,733 - __main__ - INFO -   • PlanningAgent-1: 0 tasks completed
+2025-09-07 10:07:28,733 - __main__ - INFO -   • ExecutionAgent-1: 0 tasks completed
+2025-09-07 10:07:28,733 - __main__ - INFO - 
+📁 Files Generated:
+2025-09-07 10:07:28,734 - __main__ - INFO -   • Result Files: 5
+2025-09-07 10:07:28,734 - __main__ - INFO -   • Generated Content: 4
+2025-09-07 10:07:28,734 - __main__ - INFO - 🛑 Shutting down AgentZero Live System...
+2025-09-07 10:07:28,734 - ResearchAgent:1dc8bbbf - INFO - Shutting down ResearchAgent-1
+2025-09-07 10:07:28,734 - ResearchAgent:a8c3dc29 - INFO - Shutting down ResearchAgent-2
+2025-09-07 10:07:28,734 - CodeAgent:90044305 - INFO - Shutting down CodeAgent-1
+2025-09-07 10:07:28,734 - CodeAgent:2cb1cd5d - INFO - Shutting down CodeAgent-2
+2025-09-07 10:07:28,734 - PlanningAgent:8901ea88 - INFO - Shutting down PlanningAgent-1
+2025-09-07 10:07:28,734 - ExecutionAgent:270f8fd7 - INFO - Shutting down ExecutionAgent-1
+2025-09-07 10:07:28,734 - HiveCoordinator:agentzer - INFO - Shutting down hive coordinator
+2025-09-07 10:07:28,734 - __main__ - INFO - ✅ Shutdown complete

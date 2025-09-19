@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  deploy-service:
+    build: .
+    container_name: deploy-service
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+      - PORT=8000
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

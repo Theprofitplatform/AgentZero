@@ -1,0 +1,13 @@
+{
+  "service_name": "deploy-service",
+  "service_type": "api",
+  "port": 8000,
+  "environment": "production",
+  "deployed_at": "2025-09-07T10:07:25.726423",
+  "version": "1.0.0",
+  "health_check_endpoint": "http://localhost:8000/health",
+  "dockerfile": "deployments/deploy-service/Dockerfile",
+  "compose_file": "deployments/deploy-service/docker-compose.yml",
+  "config_file": "deployments/deploy-service/service_config.json",
+  "systemd_file": "deployments/deploy-service/deploy-service.service"
+}

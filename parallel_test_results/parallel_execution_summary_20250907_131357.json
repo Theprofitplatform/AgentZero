@@ -1,0 +1,13 @@
+{
+  "execution_id": "parallel_test_20250907_131357",
+  "start_time": "2025-09-07T13:13:53.387661",
+  "end_time": "2025-09-07T13:13:57.612061",
+  "execution_time_seconds": 4.2244,
+  "total_agents": 5,
+  "total_tasks": 5,
+  "tasks_per_second": 1.1836000378752012,
+  "completed_tasks": 5,
+  "agent_performance": {
+    "ResearchAgent-Alpha": {
+      "tasks_completed": [
+        

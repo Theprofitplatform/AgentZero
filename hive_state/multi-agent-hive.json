@@ -1,0 +1,18 @@
+{
+  "hive_id": "multi-agent-hive",
+  "metrics": {
+    "total_agents": 8,
+    "active_agents": 8,
+    "total_tasks": 7,
+    "completed_tasks": 0,
+    "failed_tasks": 0,
+    "average_completion_time": 0.0,
+    "hive_efficiency": 0.0
+  },
+  "knowledge_base": {
+    "agent_specializations": {},
+    "task_patterns": {},
+    "optimization_rules": []
+  },
+  "completed_tasks": 0
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "f9541100-68be-4793-b659-cfdb20833cc0",
+  "task_name": "Monitor System",
+  "agent": "ExecutionAgent-1",
+  "status": "completed",
+  "result": {
+    "timestamp": "2025-09-07T10:07:26.728857",
+    "system_metrics": {
+      "cpu_usage": "15%",
+      "memory_usage": "45%",
+      "disk_usage": "60%",
+      "network_io": "120 MB/s",
+      "uptime": "45 days"
+    },
+    "service_health": {
+      "api-service": {
+        "status": "healthy",
+        "response_time": "120ms",
+        "error_rate": "0.01%",
+        "requests_per_second": "1500"
+      },
+      "web-service": {
+        "status": "healthy",
+        "response_time": "120ms",
+        "error_rate": "0.01%",
+        "requests_per_second": "1500"
+      }
+    },
+    "alerts": [],
+    "recommendations": [
+      "Investigate errors in api-service",
+      "Investigate errors in web-service"
+    ]
+  }
+}

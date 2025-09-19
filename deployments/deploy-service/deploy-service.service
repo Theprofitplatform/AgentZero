@@ -1,0 +1,14 @@
+[Unit]
+Description=deploy-service Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=deployments/deploy-service
+ExecStart=/usr/bin/python3 main.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

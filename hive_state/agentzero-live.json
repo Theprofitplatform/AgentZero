@@ -1,0 +1,18 @@
+{
+  "hive_id": "agentzero-live",
+  "metrics": {
+    "total_agents": 6,
+    "active_agents": 6,
+    "total_tasks": 5,
+    "completed_tasks": 0,
+    "failed_tasks": 0,
+    "average_completion_time": 0.0,
+    "hive_efficiency": 0.0
+  },
+  "knowledge_base": {
+    "agent_specializations": {},
+    "task_patterns": {},
+    "optimization_rules": []
+  },
+  "completed_tasks": 0
+}

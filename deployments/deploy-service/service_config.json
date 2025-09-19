@@ -1,0 +1,20 @@
+{
+  "service": {
+    "name": "deploy-service",
+    "port": 8000,
+    "host": "0.0.0.0",
+    "workers": 4,
+    "timeout": 30,
+    "max_connections": 1000
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "json",
+    "output": "/var/log/deploy-service/service.log"
+  },
+  "monitoring": {
+    "metrics_enabled": true,
+    "metrics_port": 9000,
+    "health_check_path": "/health"
+  }
+}
