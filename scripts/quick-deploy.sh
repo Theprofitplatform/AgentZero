@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # AgentZero Quick Deploy Script for agent.theprofitplatform.com.au
-# Run this on your Ubuntu server with: curl -sSL https://raw.githubusercontent.com/yourusername/agentzero/main/scripts/quick-deploy.sh | bash
+# Run this on your Ubuntu server with: curl -sSL https://raw.githubusercontent.com/Theprofitplatform/AgentZero/master/scripts/quick-deploy.sh | bash
 
 set -e
 
 # Configuration
 DOMAIN="agent.theprofitplatform.com.au"
 EMAIL="admin@theprofitplatform.com.au"
-GITHUB_REPO="https://github.com/yourusername/agentzero.git"
+GITHUB_REPO="https://github.com/Theprofitplatform/AgentZero.git"
 
 echo "
 ════════════════════════════════════════════════════════════════════
