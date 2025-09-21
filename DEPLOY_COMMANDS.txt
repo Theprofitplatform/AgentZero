@@ -1,0 +1,129 @@
+═══════════════════════════════════════════════════════════════════════════════
+🚀 AGENTZERO DEPLOYMENT TO agent.theprofitplatform.com.au
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ CODE IS NOW ON GITHUB: https://github.com/Theprofitplatform/AgentZero
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 COPY THESE COMMANDS TO DEPLOY ON YOUR SERVER:
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION 1: ONE-COMMAND DEPLOYMENT (RECOMMENDED)
+───────────────────────────────────────────────────────────────────────────────
+
+SSH into your server and run this single command:
+
+curl -sSL https://raw.githubusercontent.com/Theprofitplatform/AgentZero/master/scripts/quick-deploy.sh | sudo bash
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION 2: STEP-BY-STEP DEPLOYMENT (IF ONE-LINER FAILS)
+───────────────────────────────────────────────────────────────────────────────
+
+# 1. SSH into your server
+ssh root@YOUR_SERVER_IP
+
+# 2. Download and run deployment script
+cd /tmp
+wget https://raw.githubusercontent.com/Theprofitplatform/AgentZero/master/scripts/quick-deploy.sh
+chmod +x quick-deploy.sh
+sudo ./quick-deploy.sh
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION 3: MANUAL DEPLOYMENT (FULL CONTROL)
+───────────────────────────────────────────────────────────────────────────────
+
+# 1. SSH into server
+ssh root@YOUR_SERVER_IP
+
+# 2. Install Docker
+curl -fsSL https://get.docker.com | sh
+apt install docker-compose -y
+
+# 3. Clone repository
+cd /var/www
+git clone https://github.com/Theprofitplatform/AgentZero.git agentzero
+cd agentzero
+
+# 4. Quick setup
+cp .env.production .env
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+# 5. Get SSL certificate
+apt install certbot python3-certbot-nginx -y
+certbot certonly --standalone -d agent.theprofitplatform.com.au --non-interactive --agree-tos --email admin@theprofitplatform.com.au
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 AFTER DEPLOYMENT (5 minutes):
+───────────────────────────────────────────────────────────────────────────────
+
+Your site will be live at:
+
+🌐 Dashboard:  https://agent.theprofitplatform.com.au
+📚 API Docs:   https://agent.theprofitplatform.com.au/docs
+🔑 Login:      admin / secret
+📈 Health:     https://agent.theprofitplatform.com.au/health
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔍 CHECK DEPLOYMENT STATUS:
+───────────────────────────────────────────────────────────────────────────────
+
+# On your server, run:
+cd /var/www/agentzero
+docker-compose ps                    # Check if containers are running
+docker-compose logs -f --tail=50     # View logs
+curl http://localhost:8000/health    # Check API health
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ IMPORTANT DNS REQUIREMENT:
+───────────────────────────────────────────────────────────────────────────────
+
+Make sure agent.theprofitplatform.com.au points to your server's IP address:
+
+# Check DNS (from your local machine):
+nslookup agent.theprofitplatform.com.au
+
+# Should return your server's IP address
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚨 TROUBLESHOOTING:
+───────────────────────────────────────────────────────────────────────────────
+
+If deployment fails:
+
+1. Check Docker is running:
+   systemctl status docker
+
+2. Check port availability:
+   netstat -tulpn | grep -E ':(80|443|8000)'
+
+3. View deployment logs:
+   cd /var/www/agentzero
+   docker-compose logs
+
+4. Restart everything:
+   docker-compose down
+   docker-compose up -d
+
+5. Manual SSL setup:
+   certbot --nginx -d agent.theprofitplatform.com.au
+
+═══════════════════════════════════════════════════════════════════════════════
+
+💾 SAVE YOUR CREDENTIALS:
+───────────────────────────────────────────────────────────────────────────────
+
+After deployment, credentials will be shown and saved to:
+/var/www/agentzero/admin_credentials.txt
+
+SAVE THESE IMMEDIATELY!
+
+═══════════════════════════════════════════════════════════════════════════════
