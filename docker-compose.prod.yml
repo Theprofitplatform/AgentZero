@@ -1,0 +1,171 @@
+version: '3.8'
+
+services:
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: agentzero-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - api
+      - dashboard
+    networks:
+      - agentzero-network
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  # Certbot for SSL certificates
+  certbot:
+    image: certbot/certbot
+    container_name: agentzero-certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt:rw
+      - ./certbot/www:/var/www/certbot:rw
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - agentzero-network
+
+  # Override API service for production
+  api:
+    environment:
+      APP_ENV: production
+      DEBUG: "false"
+      HOST: 0.0.0.0
+      PORT: 8000
+      SECRET_KEY: ${SECRET_KEY}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://default:${REDIS_PASSWORD}@redis:6379/0
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      ALLOWED_HOSTS: agent.theprofitplatform.com.au
+      CORS_ORIGINS: https://agent.theprofitplatform.com.au
+      LOG_LEVEL: WARNING
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+  # Override Dashboard service for production
+  dashboard:
+    build:
+      args:
+        VITE_API_URL: https://agent.theprofitplatform.com.au/api/v1
+        VITE_WS_URL: wss://agent.theprofitplatform.com.au/ws
+    environment:
+      NODE_ENV: production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+  # PostgreSQL with production settings
+  postgres:
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./backups:/backups
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  # Redis with production settings
+  redis:
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD} --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data_prod:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Production agents with auto-scaling
+  planning-agent:
+    environment:
+      APP_ENV: production
+      LOG_LEVEL: WARNING
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+
+  execution-agent:
+    environment:
+      APP_ENV: production
+      LOG_LEVEL: WARNING
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+
+  research-agent:
+    environment:
+      APP_ENV: production
+      LOG_LEVEL: WARNING
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+
+  # Monitoring with resource limits
+  prometheus:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  grafana:
+    environment:
+      GF_SERVER_ROOT_URL: https://agent.theprofitplatform.com.au/grafana
+      GF_SECURITY_ADMIN_USER: ${GF_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_ADMIN_PASSWORD}
+      GF_INSTALL_PLUGINS: ${GF_PLUGINS}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  postgres_data_prod:
+    driver: local
+  redis_data_prod:
+    driver: local

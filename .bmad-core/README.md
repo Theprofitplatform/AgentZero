@@ -1,0 +1,1 @@
+BMad core initialized

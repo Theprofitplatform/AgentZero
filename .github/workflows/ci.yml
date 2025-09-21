@@ -1,0 +1,415 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.9'
+  NODE_VERSION: '18'
+  REDIS_VERSION: '7-alpine'
+  POSTGRES_VERSION: '15-alpine'
+
+jobs:
+  lint-python:
+    name: Python Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black flake8 mypy pylint
+
+      - name: Run Black
+        run: black --check src/ tests/
+
+      - name: Run Flake8
+        run: flake8 src/ tests/ --max-line-length=88 --extend-ignore=E203
+
+      - name: Run MyPy
+        run: mypy src/ --ignore-missing-imports
+
+      - name: Run Pylint
+        run: pylint src/ --disable=C0114,C0116,R0903
+
+  test-python:
+    name: Python Tests
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:${{ env.REDIS_VERSION }}
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+      postgres:
+        image: postgres:${{ env.POSTGRES_VERSION }}
+        env:
+          POSTGRES_USER: agentzero
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: agentzero_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-cov
+
+      - name: Run unit tests
+        env:
+          REDIS_URL: redis://localhost:6379
+          DATABASE_URL: postgresql://agentzero:testpass@localhost:5432/agentzero_test
+        run: |
+          pytest tests/unit -v --cov=src --cov-report=xml --cov-report=term
+
+      - name: Run integration tests
+        env:
+          REDIS_URL: redis://localhost:6379
+          DATABASE_URL: postgresql://agentzero:testpass@localhost:5432/agentzero_test
+        run: |
+          pytest tests/integration -v
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit safety
+
+      - name: Run Bandit security scan
+        run: bandit -r src/ -ll -i
+
+      - name: Check for vulnerable dependencies
+        run: safety check --json
+
+  lint-dashboard:
+    name: Dashboard Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: dashboard
+        run: npm run lint
+
+      - name: Run TypeScript check
+        working-directory: dashboard
+        run: npm run type-check
+
+      - name: Run Prettier check
+        working-directory: dashboard
+        run: npm run format:check
+
+  test-dashboard:
+    name: Dashboard Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Run unit tests
+        working-directory: dashboard
+        run: npm test -- --coverage --watchAll=false
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          directory: dashboard/coverage
+          flags: dashboard
+          name: dashboard-coverage
+
+  build-dashboard:
+    name: Build Dashboard
+    runs-on: ubuntu-latest
+    needs: [lint-dashboard, test-dashboard]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Build dashboard
+        working-directory: dashboard
+        env:
+          VITE_API_URL: ${{ secrets.API_URL || 'http://localhost:8000/api/v1' }}
+          VITE_WS_URL: ${{ secrets.WS_URL || 'ws://localhost:8001' }}
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dashboard-build
+          path: dashboard/dist/
+
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [test-python, build-dashboard]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: agentzero/agentzero
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [build-dashboard, test-python]
+
+    services:
+      redis:
+        image: redis:${{ env.REDIS_VERSION }}
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install selenium pytest-playwright
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+
+      - name: Download dashboard build
+        uses: actions/download-artifact@v3
+        with:
+          name: dashboard-build
+          path: dashboard/dist/
+
+      - name: Start services
+        run: |
+          # Start API server in background
+          uvicorn src.api.main:app --host 0.0.0.0 --port 8000 &
+
+          # Start dashboard server
+          npx serve dashboard/dist -p 3000 &
+
+          # Wait for services to be ready
+          sleep 10
+
+      - name: Run E2E tests
+        env:
+          API_URL: http://localhost:8000
+          DASHBOARD_URL: http://localhost:3000
+        run: |
+          pytest tests/e2e -v --html=e2e-report.html
+
+      - name: Upload E2E test report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-report
+          path: e2e-report.html
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [docker-build, e2e-tests]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://staging.agentzero.com
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to staging server
+        env:
+          DEPLOY_KEY: ${{ secrets.STAGING_DEPLOY_KEY }}
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          STAGING_USER: ${{ secrets.STAGING_USER }}
+        run: |
+          echo "$DEPLOY_KEY" > deploy_key
+          chmod 600 deploy_key
+
+          ssh -i deploy_key -o StrictHostKeyChecking=no \
+            $STAGING_USER@$STAGING_HOST \
+            "cd /app && docker-compose pull && docker-compose up -d"
+
+      - name: Health check
+        run: |
+          sleep 30
+          curl -f https://staging.agentzero.com/health || exit 1
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [test-python, test-dashboard, security-scan]
+    if: always()
+
+    steps:
+      - name: Send Slack notification
+        if: github.event_name != 'pull_request'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            Pipeline: ${{ github.workflow }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            Status: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Create issue on failure
+        if: failure() && github.event_name == 'push'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `CI Pipeline Failed: ${context.sha.substring(0, 7)}`,
+              body: `The CI pipeline failed for commit ${context.sha}.
+
+                     **Branch:** ${context.ref}
+                     **Author:** ${context.actor}
+                     **Workflow:** ${context.workflow}
+
+                     [View Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              labels: ['bug', 'ci-failure']
+            });

@@ -1,28 +1,70 @@
 # Core Dependencies
 aiohttp>=3.8.0
 aiofiles>=23.0.0
+asyncio-mqtt>=0.16.0
 
 # Web Scraping & Research
 beautifulsoup4>=4.12.0
 requests>=2.31.0
+selenium>=4.12.0
 
-# Data Processing (simplified versions)
-pandas
-numpy
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+networkx>=3.1  # For graph operations in Planning Agent
 
 # API Framework
 fastapi>=0.100.0
-uvicorn>=0.23.0
+uvicorn[standard]>=0.23.0
 pydantic>=2.0.0
+python-multipart>=0.0.6
+
+# WebSocket Support
+websockets>=11.0
+python-socketio>=5.9.0
 
 # Database
 redis>=4.6.0
+asyncpg>=0.28.0  # PostgreSQL async driver
+sqlalchemy>=2.0.0
+alembic>=1.11.0  # Database migrations
+
+# Authentication & Security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.6
+fastapi-limiter>=0.1.5
+
+# System Operations (Execution Agent)
+psutil>=5.9.0
+docker>=6.1.0
 
 # Testing
 pytest>=7.4.0
 pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+httpx>=0.24.0
+faker>=19.0.0
+
+# Development Tools
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.4.0
+pylint>=2.17.0
+pre-commit>=3.3.0
+ipdb>=0.13.0
+
+# Monitoring
+prometheus-client>=0.17.0
 
 # Utilities
 python-dotenv>=1.0.0
 pyyaml>=6.0
 click>=8.1.0
+python-dateutil>=2.8.0
+croniter>=1.4.0  # For scheduled tasks
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.1.0
